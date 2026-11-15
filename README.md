@@ -1,4 +1,4 @@
-# Jathin Ambati — Personal 3D Portfolio & Interactive Web Experience 🚀
+# Jathin Ambati — Personal 3D Portfolio & Interactive Web Experience 
 
 [![Live Website](https://img.shields.io/badge/Live_Website-jathinambati.netlify.app-7c3aed?style=for-the-badge&logo=netlify&logoColor=white)](https://jathinambati.netlify.app)
 [![Curriculum Vitae](https://img.shields.io/badge/Resume-Interactive_%26_PDF-4f46e5?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://jathinambati.netlify.app/resume)
