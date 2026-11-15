@@ -7,6 +7,7 @@ import {
   FaLinkedin,
   FaEnvelope,
   FaMapMarkerAlt,
+  FaGlobe,
 } from "react-icons/fa";
 import { FaXTwitter, FaInstagram } from "react-icons/fa6";
 import "./styles/ResumePage.css";
@@ -57,6 +58,14 @@ const ResumePage = () => {
           </div>
 
           <div className="cv-contacts">
+            <a
+              href="https://jathinambati.netlify.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cv-contact-item"
+            >
+              <FaGlobe /> jathinambati.netlify.app
+            </a>
             <a href="mailto:ambativjathin@gmail.com" className="cv-contact-item">
               <FaEnvelope /> ambativjathin@gmail.com
             </a>

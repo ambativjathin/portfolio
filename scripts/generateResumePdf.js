@@ -39,11 +39,11 @@ function addHeader() {
   doc.setFontSize(9);
   doc.setTextColor(...grayColor);
   const contacts = [
+    "jathinambati.netlify.app",
     "ambativjathin@gmail.com",
     "Bangalore, India",
     "linkedin.com/in/jathin-ambati-v-2897b321a",
-    "github.com/ambativjathin",
-    "x.com/VJathin74139"
+    "github.com/ambativjathin"
   ];
   doc.text(contacts.join("   |   "), margin, y);
   y += 4;
