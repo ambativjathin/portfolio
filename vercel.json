@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/resume", "destination": "/resume.html" },
+    { "source": "/((?!assets|images|models|draco|.*\\..*).*)", "destination": "/index.html" }
+  ]
+}

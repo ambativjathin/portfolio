@@ -7,10 +7,14 @@
   color: var(--accentColor);
 }
 .work-section {
+  position: relative;
+  background-color: var(--backgroundColor);
+  overflow: hidden;
   transition: 0s;
   height: 100vh;
   box-sizing: border-box;
   will-change: transform;
+  z-index: 2;
 }
 .work-container {
   margin: auto;
@@ -24,7 +28,7 @@
   display: flex;
   height: 100%;
   margin-left: -80px;
-  padding-right: 120px;
+  padding-right: 0px;
   position: relative;
 }
 .work-box {
@@ -126,12 +130,22 @@
   object-fit: cover;
 }
 .work-image img {
-  max-width: 100%;
-  max-height: 350px;
+  width: 100%;
+  max-width: 440px;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  transition: transform 0.4s ease, border-color 0.4s ease;
+}
+.work-image-in:hover img {
+  transform: scale(1.02);
+  border-color: var(--accentColor);
 }
 @media only screen and (max-height: 900px) {
   .work-image img {
-    max-height: 250px;
+    height: 210px;
   }
   .work-box {
     padding-top: 40px;

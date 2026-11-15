@@ -6,9 +6,7 @@ const About = () => {
       <div className="about-me">
         <h3 className="title">About Me</h3>
         <p className="para">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic quis
-          dolores numquam iusto Ratione earum ducimus autem id iure pariatur
-          dolorum quae maiores.
+          I'm Jathin Ambati, a Computer Science & Engineering student specializing in Artificial Intelligence and Machine Learning at Jain University. I specialize in designing intelligent machine learning models, immersive 3D web applications, and robust software architectures.
         </p>
       </div>
     </div>
