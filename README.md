@@ -9,7 +9,7 @@
 
 ---
 
-## 🌟 Overview
+##  Overview
 
 Welcome to the personal portfolio of **Jathin Ambati V**, a Computer Science & Engineering (AI & ML) student at **Jain University** and aspiring Full Stack Developer.
 
@@ -24,7 +24,7 @@ This project showcases a modern, high-performance web experience built with **Re
 
 ---
 
-## ⚙️ Tech Stack
+##  Tech Stack
 
 - **Frontend & UI**: React 18, TypeScript, Tailwind/Custom CSS, React Icons, React Fast Marquee
 - **3D Graphics & Physics**: Three.js, `@react-three/fiber`, `@react-three/drei`, `@react-three/rapier`
@@ -34,7 +34,7 @@ This project showcases a modern, high-performance web experience built with **Re
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```bash
 Portfolio-Website/
@@ -64,7 +64,7 @@ Portfolio-Website/
 
 ---
 
-## 🛠️ Local Development
+##  Local Development
 
 Clone the repository and install dependencies:
 
@@ -88,7 +88,7 @@ npm run build
 
 ---
 
-## 📬 Contact & Connect
+##  Contact & Connect
 
 - **Email**: [ambativjathin@gmail.com](mailto:ambativjathin@gmail.com)
 - **LinkedIn**: [Jathin Ambati V](https://www.linkedin.com/in/jathin-ambati-v-2897b321a/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BUaYxqfvTROe2vkvEpn5Mww%3D%3D)
