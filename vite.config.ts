@@ -22,6 +22,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, "index.html"),
         resume: resolve(__dirname, "resume.html"),
+        resumeDir: resolve(__dirname, "resume/index.html"),
       },
     },
   },
