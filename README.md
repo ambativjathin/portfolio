@@ -27,6 +27,7 @@ This project showcases a modern, high-performance web experience built with **Re
 ##  Tech Stack
 
 - **Frontend & UI**: React 18, TypeScript, Tailwind/Custom CSS, React Icons, React Fast Marquee
+- **Backend & Database**: Python 3 (Native REST API with `http.server` + Flask alternative), SQLite3 persistent storage, Full CORS support
 - **3D Graphics & Physics**: Three.js, `@react-three/fiber`, `@react-three/drei`, `@react-three/rapier`
 - **Animations**: GSAP 3.15, ScrollSmoother, ScrollTrigger, SplitText
 - **Tooling & Build**: Vite, TypeScript Compiler (`tsc`), Node.js, jsPDF
@@ -38,6 +39,12 @@ This project showcases a modern, high-performance web experience built with **Re
 
 ```bash
 Portfolio-Website/
+├── backend/
+│   ├── server.py             # Zero-dependency Python 3 REST API & SQLite server
+│   ├── app_flask.py          # Alternative Flask backend implementation
+│   ├── requirements.txt      # Flask & Flask-CORS dependencies (optional)
+│   └── data/
+│       └── portfolio.db      # SQLite database (contacts & visitor counters)
 ├── public/
 │   ├── images/
 │   │   └── projects/         # Curated project subject photos
@@ -53,13 +60,13 @@ Portfolio-Website/
 │   │   ├── Career.tsx        # Education & career milestone timeline
 │   │   ├── Work.tsx          # Pinned horizontal project gallery (01-06)
 │   │   ├── TechStack.tsx     # 3D Rapier rigid-body physics playground
-│   │   ├── Contact.tsx       # Contact details & social links
+│   │   ├── Contact.tsx       # Contact form, rating & live Python visitor counter
 │   │   └── ResumePage.tsx    # Dedicated /resume page with print styling
 │   ├── App.tsx               # Route handler & main container
 │   └── main.tsx              # Application entry point
 ├── netlify.toml              # Netlify build & redirect configuration
 ├── vercel.json               # Vercel SPA rewrites configuration
-└── vite.config.ts            # Multi-page build configuration
+└── vite.config.ts            # Multi-page build configuration with /api proxy
 ```
 
 ---
@@ -79,6 +86,29 @@ Start the Vite development server:
 ```bash
 npm run dev
 ```
+
+### 🐍 Starting the Python Backend
+
+Start the zero-dependency Python 3 backend API server (runs on `http://localhost:5000`):
+
+```bash
+npm run backend
+# or directly:
+python3.12 backend/server.py
+```
+
+*(Optional) Alternatively run the Flask version:*
+```bash
+python3.12 backend/app_flask.py
+```
+
+#### API Endpoints:
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/health` | Healthcheck and server runtime status |
+| `GET` | `/api/visitor-count` | Real-time visitor counter with atomic SQLite increment |
+| `POST` | `/api/contact` | Submits contact/feedback message with rating to SQLite |
+| `GET` | `/api/contact/messages` | Admin/viewer endpoint to review recent submissions |
 
 Build for production:
 
