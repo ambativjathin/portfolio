@@ -24,7 +24,13 @@ def apply_cors(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With"
     return response
 
-DB_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+# Serverless-safe writable DB path (/tmp on Vercel, or backend/data locally)
+if os.environ.get("VERCEL"):
+    DB_DIR = "/tmp"
+else:
+    DB_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+
+os.makedirs(DB_DIR, exist_ok=True)
 DB_PATH = os.path.join(DB_DIR, "portfolio.db")
 
 def init_db():
@@ -61,6 +67,7 @@ def init_db():
     conn.close()
 
 @app.route("/api/health", methods=["GET"])
+@app.route("/health", methods=["GET"])
 def health():
     return jsonify({
         "status": "healthy",
@@ -70,6 +77,7 @@ def health():
     })
 
 @app.route("/api/visitor-count", methods=["GET"])
+@app.route("/visitor-count", methods=["GET"])
 def visitor_count():
     read_only = request.args.get("peek", "false").lower() == "true"
     conn = sqlite3.connect(DB_PATH)
@@ -94,9 +102,13 @@ def visitor_count():
         "last_visited": row[2] if row else now_iso
     })
 
-@app.route("/api/contact", methods=["POST"])
-@app.route("/api/feedback", methods=["POST"])
+@app.route("/api/contact", methods=["POST", "OPTIONS"])
+@app.route("/contact", methods=["POST", "OPTIONS"])
+@app.route("/api/feedback", methods=["POST", "OPTIONS"])
+@app.route("/feedback", methods=["POST", "OPTIONS"])
 def submit_contact():
+    if request.method == "OPTIONS":
+        return "", 204
     data = request.get_json(silent=True) or {}
     name = str(data.get("name", "")).strip()
     email = str(data.get("email", "")).strip()
@@ -132,6 +144,7 @@ def submit_contact():
     }), 201
 
 @app.route("/api/contact/messages", methods=["GET"])
+@app.route("/contact/messages", methods=["GET"])
 def list_messages():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
