@@ -25,7 +25,7 @@
   text-transform: uppercase;
   letter-spacing: -1px;
   margin: 0;
-  background: linear-gradient(135deg, #ffffff 30%, #a78bfa 100%);
+  background: linear-gradient(135deg, #ffffff 40%, #71717a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -79,9 +79,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(167, 139, 250, 0.15);
-  color: #c4b5fd;
-  border: 1px solid rgba(167, 139, 250, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f4f4f5;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 3px 10px;
   border-radius: 9999px;
   font-size: 12px;
@@ -112,7 +112,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #8b5cf6, #ec4899, transparent);
+  background: linear-gradient(90deg, transparent, #ffffff, #71717a, transparent);
 }
 
 .form-intro {
@@ -185,13 +185,13 @@
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
-  background: rgba(15, 23, 42, 0.85);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+  background: rgba(24, 24, 27, 0.9);
 }
 
 .form-group select option {
-  background: #0f172a;
+  background: #18181b;
   color: #f8fafc;
 }
 
@@ -212,8 +212,8 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, #ffffff 0%, #d4d4d8 100%);
+  color: #000000;
   border: none;
   padding: 14px 30px;
   border-radius: 12px;
@@ -221,13 +221,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.5);
+  box-shadow: 0 10px 25px -5px rgba(255, 255, 255, 0.25);
 }
 
 .submit-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 15px 30px -5px rgba(124, 58, 237, 0.65);
-  filter: brightness(1.1);
+  box-shadow: 0 15px 30px -5px rgba(255, 255, 255, 0.4);
+  filter: brightness(1.05);
 }
 
 .submit-button:disabled {
@@ -295,8 +295,8 @@ a.contact-social {
 }
 
 a.contact-social:hover {
-  color: #a78bfa;
-  border-color: #a78bfa;
+  color: #ffffff;
+  border-color: #ffffff;
   padding-left: 6px;
 }
 
@@ -308,7 +308,7 @@ a.contact-social:hover {
 }
 
 .contact-box h2 > span {
-  color: var(--accentColor, #a78bfa);
+  color: var(--accentColor, #ffffff);
 }
 
 .contact-box h5 {

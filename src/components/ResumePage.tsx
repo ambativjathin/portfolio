@@ -16,6 +16,20 @@ const ResumePage = () => {
   useEffect(() => {
     document.title = "Jathin Ambati - Resume & Curriculum Vitae";
     window.scrollTo(0, 0);
+
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevBodyOverflowY = document.body.style.overflowY;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = "auto";
+    document.body.style.overflowY = "auto";
+    document.documentElement.style.overflow = "auto";
+
+    return () => {
+      document.body.style.overflow = prevBodyOverflow;
+      document.body.style.overflowY = prevBodyOverflowY;
+      document.documentElement.style.overflow = prevHtmlOverflow;
+    };
   }, []);
 
   const handlePrint = () => {

@@ -14,29 +14,33 @@ const margin = 16;
 const contentWidth = pageWidth - margin * 2;
 let y = 18;
 
-// Primary Accent Color: Deep Indigo / Violet (#4F46E5)
-const primaryColor = [79, 70, 229];
-// Neutral Dark: #111827
+// Titanium Monochrome Color Palette:
+// Primary Accent: Sleek Titanium Slate / Dark Charcoal (#18181B / #27272A)
+const primaryColor = [24, 24, 27];
+// Neutral Dark text: #111827
 const darkColor = [17, 24, 39];
-// Muted Gray: #4B5563
+// Muted Slate text: #4B5563
 const grayColor = [75, 85, 99];
+// Secondary Slate / Tech: #52525B
+const techColor = [82, 82, 91];
 // Light Border: #E5E7EB
 const borderColor = [229, 231, 235];
 
 function addHeader() {
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(24);
+  doc.setFontSize(23);
   doc.setTextColor(...darkColor);
   doc.text("JATHIN AMBATI V", margin, y);
   y += 7;
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10.5);
   doc.setTextColor(...primaryColor);
   doc.text("Computer Science & Engineering (AI & ML) | Aspiring Full Stack Developer", margin, y);
   y += 6;
 
-  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8.8);
   doc.setTextColor(...grayColor);
   const contacts = [
     "jathinambati.netlify.app",
@@ -46,7 +50,7 @@ function addHeader() {
     "github.com/ambativjathin"
   ];
   doc.text(contacts.join("   |   "), margin, y);
-  y += 4;
+  y += 4.5;
 
   // Divider line
   doc.setDrawColor(...borderColor);
@@ -61,19 +65,20 @@ function addSectionTitle(title) {
     y = 18;
   }
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  doc.setTextColor(...primaryColor);
+  doc.setFontSize(11.5);
+  doc.setTextColor(...darkColor);
   doc.text(title.toUpperCase(), margin, y);
   y += 2;
 
-  doc.setDrawColor(...primaryColor);
+  // Solid dark underline
+  doc.setDrawColor(...darkColor);
   doc.setLineWidth(0.8);
   doc.line(margin, y, margin + 28, y);
 
   doc.setDrawColor(...borderColor);
   doc.setLineWidth(0.3);
   doc.line(margin + 28, y, margin + contentWidth, y);
-  y += 5;
+  y += 5.5;
 }
 
 function checkPageOverflow(spaceNeeded = 18) {
@@ -89,36 +94,38 @@ addHeader();
 // 2. Summary
 addSectionTitle("Professional Profile");
 doc.setFont("helvetica", "normal");
-doc.setFontSize(9.5);
+doc.setFontSize(9.2);
 doc.setTextColor(...darkColor);
 const summary = "Enthusiastic Computer Science and Engineering student specializing in Artificial Intelligence and Machine Learning at Jain University (Batch of 2025–2029). Driven by a passion for building scalable full-stack web platforms, interactive 3D WebGL experiences, and high-performance machine learning models. Dedicated to continuous learning, algorithmic precision, and developing production-grade software solutions.";
 const summaryLines = doc.splitTextToSize(summary, contentWidth);
 doc.text(summaryLines, margin, y);
-y += summaryLines.length * 4.5 + 4;
+y += summaryLines.length * 4.3 + 3.5;
 
 // 3. Education
 addSectionTitle("Education");
 doc.setFont("helvetica", "bold");
-doc.setFontSize(10.5);
+doc.setFontSize(10);
 doc.setTextColor(...darkColor);
 doc.text("Bachelor of Technology (B.Tech) - Computer Science & Engineering (AI & ML)", margin, y);
 doc.setFont("helvetica", "normal");
-doc.setFontSize(9.5);
+doc.setFontSize(9);
 doc.setTextColor(...grayColor);
 doc.text("2025 – 2029 (Expected)", margin + contentWidth - 34, y);
-y += 4.5;
-
-doc.setFont("helvetica", "italic");
-doc.setFontSize(9.5);
-doc.setTextColor(...primaryColor);
-doc.text("Jain University, Bangalore, India", margin, y);
-y += 4.5;
+y += 4.2;
 
 doc.setFont("helvetica", "normal");
 doc.setFontSize(9);
+doc.setTextColor(...primaryColor);
+doc.text("Jain University, Bangalore, India", margin, y);
+y += 4.2;
+
+doc.setFont("helvetica", "normal");
+doc.setFontSize(8.5);
 doc.setTextColor(...grayColor);
-doc.text("Key Coursework: Data Structures & Algorithms, Operating Systems, Computer Organization & Architecture, Discrete Mathematics & Graph Theory, Object-Oriented Programming, Database Management Systems.", margin, y, { maxWidth: contentWidth });
-y += 8;
+const coursework = "Key Coursework: Data Structures & Algorithms, Operating Systems, Computer Organization & Architecture, Discrete Mathematics & Graph Theory, Object-Oriented Programming, Database Management Systems.";
+const courseworkLines = doc.splitTextToSize(coursework, contentWidth);
+doc.text(courseworkLines, margin, y);
+y += courseworkLines.length * 3.8 + 4;
 
 // 4. Technical Skills
 addSectionTitle("Technical Skills");
@@ -133,7 +140,7 @@ const skillCategories = [
 
 skillCategories.forEach(cat => {
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
+  doc.setFontSize(8.8);
   doc.setTextColor(...darkColor);
   doc.text(`•  ${cat.label}: `, margin, y);
   const labelWidth = doc.getTextWidth(`•  ${cat.label}: `);
@@ -142,9 +149,9 @@ skillCategories.forEach(cat => {
   doc.setTextColor(...grayColor);
   const skillLines = doc.splitTextToSize(cat.skills, contentWidth - labelWidth);
   doc.text(skillLines, margin + labelWidth, y);
-  y += skillLines.length * 4 + 1.5;
+  y += skillLines.length * 3.8 + 1.5;
 });
-y += 4;
+y += 3.5;
 
 // 5. Featured Projects
 addSectionTitle("Featured Projects");
@@ -201,28 +208,31 @@ const projects = [
 ];
 
 projects.forEach(p => {
-  checkPageOverflow(20);
+  checkPageOverflow(22);
+  // Title on its own dedicated line to prevent any overlapping
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9.5);
   doc.setTextColor(...darkColor);
   doc.text(p.title, margin, y);
+  y += 3.8;
 
+  // Tech stack cleanly positioned below title
   doc.setFont("helvetica", "italic");
-  doc.setFontSize(8.5);
-  doc.setTextColor(...primaryColor);
-  doc.text(`[${p.tech}]`, margin + doc.getTextWidth(p.title) + 3, y);
-  y += 4;
+  doc.setFontSize(8.2);
+  doc.setTextColor(...techColor);
+  doc.text(`[ ${p.tech} ]`, margin + 2, y);
+  y += 3.8;
 
   p.bullets.forEach(b => {
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(8.5);
+    doc.setFontSize(8.3);
     doc.setTextColor(...grayColor);
     const bulletText = `–  ${b}`;
     const lines = doc.splitTextToSize(bulletText, contentWidth - 4);
     doc.text(lines, margin + 4, y);
-    y += lines.length * 3.8;
+    y += lines.length * 3.6;
   });
-  y += 2;
+  y += 2.2;
 });
 
 // 6. Certifications & Academic Milestones
@@ -240,12 +250,13 @@ certs.forEach(c => {
   doc.setFontSize(9);
   doc.setTextColor(...darkColor);
   doc.text(`•  ${c.title}`, margin, y);
+  y += 3.8;
   
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(8.5);
+  doc.setFontSize(8.3);
   doc.setTextColor(...grayColor);
-  doc.text(`— ${c.org} (${c.date})`, margin + doc.getTextWidth(`•  ${c.title} `), y);
-  y += 4.5;
+  doc.text(`    ${c.org}  •  ${c.date}`, margin + 2, y);
+  y += 4.2;
 });
 
 const outDir = path.resolve("public");
