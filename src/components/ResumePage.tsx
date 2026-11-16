@@ -6,6 +6,7 @@ import {
   FaGithub,
   FaLinkedin,
   FaEnvelope,
+  FaPhoneAlt,
   FaMapMarkerAlt,
   FaGlobe,
 } from "react-icons/fa";
@@ -73,15 +74,18 @@ const ResumePage = () => {
 
           <div className="cv-contacts">
             <a
-              href="https://jathinambati.netlify.app"
+              href="https://jathinambati.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               className="cv-contact-item"
             >
-              <FaGlobe /> jathinambati.netlify.app
+              <FaGlobe /> jathinambati.vercel.app
             </a>
             <a href="mailto:ambativjathin@gmail.com" className="cv-contact-item">
               <FaEnvelope /> ambativjathin@gmail.com
+            </a>
+            <a href="tel:+918123541856" className="cv-contact-item">
+              <FaPhoneAlt /> +91 81235 41856
             </a>
             <span className="cv-contact-item">
               <FaMapMarkerAlt /> Bangalore, India

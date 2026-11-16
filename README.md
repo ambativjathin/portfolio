@@ -1,11 +1,11 @@
 # Jathin Ambati — Personal 3D Portfolio & Interactive Web Experience 
 
-[![Live Website](https://img.shields.io/badge/Live_Website-jathinambati.netlify.app-7c3aed?style=for-the-badge&logo=netlify&logoColor=white)](https://jathinambati.netlify.app)
-[![Curriculum Vitae](https://img.shields.io/badge/Resume-Interactive_%26_PDF-4f46e5?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://jathinambati.netlify.app/resume)
+[![Live Website](https://img.shields.io/badge/Live_Website-jathinambati.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://jathinambati.vercel.app)
+[![Curriculum Vitae](https://img.shields.io/badge/Resume-Interactive_%26_PDF-4f46e5?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://jathinambati.vercel.app/resume)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jathin-ambati-v-2897b321a/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BUaYxqfvTROe2vkvEpn5Mww%3D%3D)
 
-> **Live Production URL**: [https://jathinambati.netlify.app](https://jathinambati.netlify.app)  
-> **Interactive Resume**: [https://jathinambati.netlify.app/resume](https://jathinambati.netlify.app/resume)
+> **Live Production URL**: [https://jathinambati.vercel.app](https://jathinambati.vercel.app)  
+> **Interactive Resume**: [https://jathinambati.vercel.app/resume](https://jathinambati.vercel.app/resume)
 
 ---
 
@@ -31,7 +31,7 @@ This project showcases a modern, high-performance web experience built with **Re
 - **3D Graphics & Physics**: Three.js, `@react-three/fiber`, `@react-three/drei`, `@react-three/rapier`
 - **Animations**: GSAP 3.15, ScrollSmoother, ScrollTrigger, SplitText
 - **Tooling & Build**: Vite, TypeScript Compiler (`tsc`), Node.js, jsPDF
-- **Deployment**: Netlify, Vercel
+- **Deployment**: Vercel (Production), Netlify
 
 ---
 
@@ -121,8 +121,9 @@ npm run build
 ##  Contact & Connect
 
 - **Email**: [ambativjathin@gmail.com](mailto:ambativjathin@gmail.com)
+- **Phone**: [+91 8123541856](tel:+918123541856)
 - **LinkedIn**: [Jathin Ambati V](https://www.linkedin.com/in/jathin-ambati-v-2897b321a/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BUaYxqfvTROe2vkvEpn5Mww%3D%3D)
 - **GitHub**: [@ambativjathin](https://github.com/ambativjathin)
 - **Twitter / X**: [@VJathin74139](https://x.com/VJathin74139)
 - **Instagram**: [@jathin_ambati](https://www.instagram.com/jathin_ambati?vrfl=MWVyNnY4NDdkc2kwNw==)
-- **Portfolio**: [https://jathinambati.netlify.app](https://jathinambati.netlify.app)
+- **Portfolio**: [https://jathinambati.vercel.app](https://jathinambati.vercel.app)

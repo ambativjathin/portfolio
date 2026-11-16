@@ -226,6 +226,12 @@ const Contact = () => {
                 ambativjathin@gmail.com
               </a>
             </p>
+            <h4>Phone</h4>
+            <p>
+              <a href="tel:+918123541856" data-cursor="disable">
+                +91 81235 41856
+              </a>
+            </p>
             <h4>Location</h4>
             <p>
               <a href="#contact" data-cursor="disable">

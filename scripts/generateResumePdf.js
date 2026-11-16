@@ -42,14 +42,19 @@ function addHeader() {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.8);
   doc.setTextColor(...grayColor);
-  const contacts = [
-    "jathinambati.netlify.app",
+  const contactsRow1 = [
+    "jathinambati.vercel.app",
     "ambativjathin@gmail.com",
-    "Bangalore, India",
+    "+91 8123541856",
+    "Bangalore, India"
+  ];
+  const contactsRow2 = [
     "linkedin.com/in/jathin-ambati-v-2897b321a",
     "github.com/ambativjathin"
   ];
-  doc.text(contacts.join("   |   "), margin, y);
+  doc.text(contactsRow1.join("   |   "), margin, y);
+  y += 4.2;
+  doc.text(contactsRow2.join("   |   "), margin, y);
   y += 4.5;
 
   // Divider line
