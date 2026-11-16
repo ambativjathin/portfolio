@@ -8,6 +8,7 @@
     "api": {
       "root": "api",
       "framework": "flask",
+      "entrypoint": "index.py",
       "bindings": [
         {
           "type": "service",
@@ -19,7 +20,8 @@
     },
     "backend": {
       "root": "backend",
-      "framework": "flask"
+      "framework": "flask",
+      "entrypoint": "app.py"
     }
   },
   "rewrites": [

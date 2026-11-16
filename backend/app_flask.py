@@ -25,16 +25,23 @@ def apply_cors(response):
     return response
 
 # Serverless-safe writable DB path (/tmp on Vercel, or backend/data locally)
-if os.environ.get("VERCEL"):
+if os.path.exists("/tmp") and os.access("/tmp", os.W_OK):
+    DB_DIR = "/tmp"
+elif os.environ.get("VERCEL"):
     DB_DIR = "/tmp"
 else:
     DB_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
-os.makedirs(DB_DIR, exist_ok=True)
+try:
+    os.makedirs(DB_DIR, exist_ok=True)
+except Exception:
+    DB_DIR = "/tmp"
+    os.makedirs(DB_DIR, exist_ok=True)
+
 DB_PATH = os.path.join(DB_DIR, "portfolio.db")
 
+
 def init_db():
-    os.makedirs(DB_DIR, exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
@@ -61,24 +68,35 @@ def init_db():
     if not cursor.fetchone():
         cursor.execute("""
             INSERT INTO visitor_stats (id, visitor_count, total_views, last_visited_at)
-            VALUES (1, 100, 100, ?)
+            VALUES (1, 125, 125, ?)
         """, (datetime.now(timezone.utc).isoformat(),))
     conn.commit()
     conn.close()
 
+
+# Ensure tables exist on load
+try:
+    init_db()
+except Exception as e:
+    sys.stderr.write(f"Warning: DB init error: {e}\n")
+
+
 @app.route("/api/health", methods=["GET"])
 @app.route("/health", methods=["GET"])
 def health():
+    init_db()
     return jsonify({
         "status": "healthy",
         "service": "Jathin Ambati Portfolio Flask Backend",
         "version": "1.0.0",
-        "database": "SQLite3"
+        "database": f"SQLite3 ({DB_PATH})"
     })
+
 
 @app.route("/api/visitor-count", methods=["GET"])
 @app.route("/visitor-count", methods=["GET"])
 def visitor_count():
+    init_db()
     read_only = request.args.get("peek", "false").lower() == "true"
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -97,10 +115,11 @@ def visitor_count():
     conn.close()
     return jsonify({
         "status": "success",
-        "visitor_count": row[0] if row else 1,
-        "total_views": row[1] if row else 1,
+        "visitor_count": row[0] if row else 125,
+        "total_views": row[1] if row else 125,
         "last_visited": row[2] if row else now_iso
     })
+
 
 @app.route("/api/contact", methods=["POST", "OPTIONS"])
 @app.route("/contact", methods=["POST", "OPTIONS"])
@@ -109,6 +128,7 @@ def visitor_count():
 def submit_contact():
     if request.method == "OPTIONS":
         return "", 204
+
     data = request.get_json(silent=True) or {}
     name = str(data.get("name", "")).strip()
     email = str(data.get("email", "")).strip()
@@ -126,6 +146,7 @@ def submit_contact():
     if not message or len(message) < 5:
         return jsonify({"status": "error", "message": "Please enter a message (at least 5 characters)."}), 400
 
+    init_db()
     now_iso = datetime.now(timezone.utc).isoformat()
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -143,9 +164,11 @@ def submit_contact():
         "submission_id": sub_id
     }), 201
 
+
 @app.route("/api/contact/messages", methods=["GET"])
 @app.route("/contact/messages", methods=["GET"])
 def list_messages():
+    init_db()
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("SELECT id, name, email, subject, message, rating, created_at FROM contacts ORDER BY id DESC LIMIT 50")
@@ -156,6 +179,7 @@ def list_messages():
         for r in rows
     ]
     return jsonify({"status": "success", "total_messages": len(messages), "messages": messages})
+
 
 if __name__ == "__main__":
     init_db()
