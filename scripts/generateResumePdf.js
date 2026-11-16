@@ -27,6 +27,19 @@ const techColor = [82, 82, 91];
 const borderColor = [229, 231, 235];
 
 function addHeader() {
+  const photoSize = 22;
+  const photoX = margin + contentWidth - photoSize;
+  const photoY = y - 4;
+
+  const imgPath = path.resolve("public/images/jathin.jpg");
+  if (fs.existsSync(imgPath)) {
+    const imgBuf = fs.readFileSync(imgPath);
+    doc.addImage(imgBuf, "JPEG", photoX, photoY, photoSize, photoSize);
+    doc.setDrawColor(...primaryColor);
+    doc.setLineWidth(0.5);
+    doc.rect(photoX, photoY, photoSize, photoSize);
+  }
+
   doc.setFont("helvetica", "bold");
   doc.setFontSize(23);
   doc.setTextColor(...darkColor);

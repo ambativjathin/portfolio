@@ -65,11 +65,20 @@ const ResumePage = () => {
       <main className="resume-document a4-sheet">
         {/* Header Section */}
         <header className="cv-header">
-          <div className="cv-header-main">
-            <h1 className="cv-name">JATHIN AMBATI V</h1>
-            <h2 className="cv-title">
-              Computer Science & Engineering (AI & ML) • Aspiring Full Stack Developer
-            </h2>
+          <div className="cv-header-row">
+            <div className="cv-header-main">
+              <h1 className="cv-name">JATHIN AMBATI V</h1>
+              <h2 className="cv-title">
+                Computer Science & Engineering (AI & ML) • Aspiring Full Stack Developer
+              </h2>
+            </div>
+            <div className="cv-photo-frame">
+              <img
+                src="/images/jathin.jpg"
+                alt="Jathin Ambati"
+                className="cv-photo"
+              />
+            </div>
           </div>
 
           <div className="cv-contacts">
