@@ -64,12 +64,24 @@ def init_db():
             last_visited_at TEXT
         )
     """)
-    cursor.execute("SELECT id FROM visitor_stats WHERE id = 1")
-    if not cursor.fetchone():
+    initial_offset = int(os.environ.get("INITIAL_VISITOR_COUNT", "0"))
+    reset_requested = os.environ.get("RESET_VISITOR_COUNT", "false").lower() == "true"
+
+    cursor.execute("SELECT visitor_count FROM visitor_stats WHERE id = 1")
+    row = cursor.fetchone()
+    if not row:
         cursor.execute("""
             INSERT INTO visitor_stats (id, visitor_count, total_views, last_visited_at)
-            VALUES (1, 125, 125, ?)
-        """, (datetime.now(timezone.utc).isoformat(),))
+            VALUES (1, ?, ?, ?)
+        """, (initial_offset, initial_offset, datetime.now(timezone.utc).isoformat()))
+    elif reset_requested or row[0] in (125, 126):
+        cursor.execute("""
+            UPDATE visitor_stats
+            SET visitor_count = ?,
+                total_views = ?,
+                last_visited_at = ?
+            WHERE id = 1
+        """, (initial_offset, initial_offset, datetime.now(timezone.utc).isoformat()))
     conn.commit()
     conn.close()
 
@@ -113,10 +125,11 @@ def visitor_count():
     cursor.execute("SELECT visitor_count, total_views, last_visited_at FROM visitor_stats WHERE id = 1")
     row = cursor.fetchone()
     conn.close()
+    initial_offset = int(os.environ.get("INITIAL_VISITOR_COUNT", "0"))
     return jsonify({
         "status": "success",
-        "visitor_count": row[0] if row else 125,
-        "total_views": row[1] if row else 125,
+        "visitor_count": row[0] if row else initial_offset,
+        "total_views": row[1] if row else initial_offset,
         "last_visited": row[2] if row else now_iso
     })
 

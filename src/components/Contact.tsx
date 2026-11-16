@@ -21,7 +21,17 @@ const Contact = () => {
 
   useEffect(() => {
     let isMounted = true;
-    fetch(`${API_BASE}/api/visitor-count`)
+
+    // Check if this browser session has already counted a visit
+    const hasVisitedSession = Boolean(sessionStorage.getItem("portfolio_session_visited"));
+    const query = hasVisitedSession ? "?peek=true" : "";
+
+    // Guard against React 18 StrictMode double-incrementing on component mount
+    if (!hasVisitedSession) {
+      sessionStorage.setItem("portfolio_session_visited", "true");
+    }
+
+    fetch(`${API_BASE}/api/visitor-count${query}`)
       .then((res) => {
         if (!res.ok) throw new Error("Backend offline");
         return res.json();
@@ -34,6 +44,9 @@ const Contact = () => {
       })
       .catch(() => {
         if (isMounted) {
+          if (!hasVisitedSession) {
+            sessionStorage.removeItem("portfolio_session_visited");
+          }
           setBackendOnline(false);
         }
       });

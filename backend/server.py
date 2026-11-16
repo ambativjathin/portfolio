@@ -57,12 +57,24 @@ def init_db():
     """)
 
     # Ensure initial visitor record exists
-    cursor.execute("SELECT id FROM visitor_stats WHERE id = 1")
-    if not cursor.fetchone():
+    initial_offset = int(os.environ.get("INITIAL_VISITOR_COUNT", "0"))
+    reset_requested = os.environ.get("RESET_VISITOR_COUNT", "false").lower() == "true"
+
+    cursor.execute("SELECT visitor_count FROM visitor_stats WHERE id = 1")
+    row = cursor.fetchone()
+    if not row:
         cursor.execute("""
             INSERT INTO visitor_stats (id, visitor_count, total_views, last_visited_at)
-            VALUES (1, 100, 100, ?)
-        """, (datetime.now(timezone.utc).isoformat(),))
+            VALUES (1, ?, ?, ?)
+        """, (initial_offset, initial_offset, datetime.now(timezone.utc).isoformat()))
+    elif reset_requested or row[0] in (100, 125, 126):
+        cursor.execute("""
+            UPDATE visitor_stats
+            SET visitor_count = ?,
+                total_views = ?,
+                last_visited_at = ?
+            WHERE id = 1
+        """, (initial_offset, initial_offset, datetime.now(timezone.utc).isoformat()))
 
     # 3. Visitor Audit Logs Table
     cursor.execute("""

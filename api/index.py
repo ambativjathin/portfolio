@@ -39,9 +39,48 @@ except Exception:
 
 DB_PATH = os.path.join(DB_DIR, "portfolio.db")
 
+# Seed database path bundled in the repository
+SEED_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "portfolio.db")
+
+
+def redis_visitor_op(increment=False):
+    """
+    Attempt to use Upstash Redis or Vercel KV for distributed serverless visitor counting
+    if environment variables are provided. Uses standard urllib (zero dependencies).
+    """
+    base_url = (os.environ.get("UPSTASH_REDIS_REST_URL") or os.environ.get("KV_REST_API_URL") or "").rstrip("/")
+    token = os.environ.get("UPSTASH_REDIS_REST_TOKEN") or os.environ.get("KV_REST_API_TOKEN") or ""
+    if not base_url or not token:
+        return None
+
+    try:
+        cmd = "incr" if increment else "get"
+        req_url = f"{base_url}/{cmd}/portfolio:visitor_count"
+        req = urllib.request.Request(
+            req_url,
+            headers={"Authorization": f"Bearer {token}"},
+            method="POST" if increment else "GET"
+        )
+        with urllib.request.urlopen(req, timeout=3) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            val = data.get("result")
+            if val is not None:
+                return int(val)
+    except Exception as e:
+        sys.stderr.write(f"Warning: Redis counter error: {e}\n")
+    return None
+
 
 def init_db():
     """Ensure database schema and initial counters exist."""
+    # When running on Vercel (/tmp) and seed DB exists in deployment package, copy it over
+    if DB_PATH != SEED_DB_PATH and not os.path.exists(DB_PATH) and os.path.exists(SEED_DB_PATH):
+        try:
+            import shutil
+            shutil.copyfile(SEED_DB_PATH, DB_PATH)
+        except Exception:
+            pass
+
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
@@ -64,12 +103,27 @@ def init_db():
             last_visited_at TEXT
         )
     """)
-    cursor.execute("SELECT id FROM visitor_stats WHERE id = 1")
-    if not cursor.fetchone():
+
+    initial_offset = int(os.environ.get("INITIAL_VISITOR_COUNT", "0"))
+    reset_requested = os.environ.get("RESET_VISITOR_COUNT", "false").lower() == "true"
+
+    cursor.execute("SELECT visitor_count FROM visitor_stats WHERE id = 1")
+    row = cursor.fetchone()
+    if not row:
         cursor.execute("""
             INSERT INTO visitor_stats (id, visitor_count, total_views, last_visited_at)
-            VALUES (1, 125, 125, ?)
-        """, (datetime.now(timezone.utc).isoformat(),))
+            VALUES (1, ?, ?, ?)
+        """, (initial_offset, initial_offset, datetime.now(timezone.utc).isoformat()))
+    elif reset_requested or row[0] in (125, 126):
+        # Clean up legacy artificial 125/126 starting values
+        cursor.execute("""
+            UPDATE visitor_stats
+            SET visitor_count = ?,
+                total_views = ?,
+                last_visited_at = ?
+            WHERE id = 1
+        """, (initial_offset, initial_offset, datetime.now(timezone.utc).isoformat()))
+
     conn.commit()
     conn.close()
 
@@ -129,10 +183,22 @@ def visitor_count():
     if fwd:
         return fwd
 
-    init_db()
     read_only = request.args.get("peek", "false").lower() == "true"
     now_iso = datetime.now(timezone.utc).isoformat()
 
+    # 1. Use Upstash Redis / Vercel KV if configured (provides persistent cross-container counting)
+    redis_val = redis_visitor_op(increment=not read_only)
+    if redis_val is not None:
+        return jsonify({
+            "status": "success",
+            "visitor_count": redis_val,
+            "total_views": redis_val,
+            "last_visited": now_iso,
+            "persistence": "redis_kv"
+        })
+
+    # 2. SQLite local / serverless fallback
+    init_db()
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     if not read_only:
@@ -149,15 +215,17 @@ def visitor_count():
     row = cursor.fetchone()
     conn.close()
 
-    count = row[0] if row else 125
-    views = row[1] if row else 125
+    initial_offset = int(os.environ.get("INITIAL_VISITOR_COUNT", "0"))
+    count = row[0] if row else initial_offset
+    views = row[1] if row else initial_offset
     visited = row[2] if row else now_iso
 
     return jsonify({
         "status": "success",
         "visitor_count": count,
         "total_views": views,
-        "last_visited": visited
+        "last_visited": visited,
+        "persistence": "sqlite"
     })
 
 
