@@ -178,11 +178,6 @@ def health():
 @app.route("/api/visitor-count", methods=["GET"])
 @app.route("/visitor-count", methods=["GET"])
 def visitor_count():
-    qs = f"?peek={request.args.get('peek', 'false')}" if request.args else ""
-    fwd = forward_to_backend_if_bound(f"/visitor-count{qs}", method="GET")
-    if fwd:
-        return fwd
-
     read_only = request.args.get("peek", "false").lower() == "true"
     now_iso = datetime.now(timezone.utc).isoformat()
 
@@ -196,6 +191,11 @@ def visitor_count():
             "last_visited": now_iso,
             "persistence": "redis_kv"
         })
+
+    qs = f"?peek={request.args.get('peek', 'false')}" if request.args else ""
+    fwd = forward_to_backend_if_bound(f"/visitor-count{qs}", method="GET")
+    if fwd:
+        return fwd
 
     # 2. SQLite local / serverless fallback
     init_db()

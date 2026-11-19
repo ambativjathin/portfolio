@@ -10,7 +10,10 @@ if sys.version_info[0] < 3:
     sys.exit(1)
 
 import os
+import json
 import sqlite3
+import urllib.request
+import urllib.error
 from datetime import datetime, timezone
 from flask import Flask, request, jsonify
 
@@ -39,6 +42,34 @@ except Exception:
     os.makedirs(DB_DIR, exist_ok=True)
 
 DB_PATH = os.path.join(DB_DIR, "portfolio.db")
+
+
+def redis_visitor_op(increment=False):
+    """
+    Attempt to use Upstash Redis or Vercel KV for distributed serverless visitor counting
+    if environment variables are provided. Uses standard urllib (zero dependencies).
+    """
+    base_url = (os.environ.get("UPSTASH_REDIS_REST_URL") or os.environ.get("KV_REST_API_URL") or "").rstrip("/")
+    token = os.environ.get("UPSTASH_REDIS_REST_TOKEN") or os.environ.get("KV_REST_API_TOKEN") or ""
+    if not base_url or not token:
+        return None
+
+    try:
+        cmd = "incr" if increment else "get"
+        req_url = f"{base_url}/{cmd}/portfolio:visitor_count"
+        req = urllib.request.Request(
+            req_url,
+            headers={"Authorization": f"Bearer {token}"},
+            method="POST" if increment else "GET"
+        )
+        with urllib.request.urlopen(req, timeout=3) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            val = data.get("result")
+            if val is not None:
+                return int(val)
+    except Exception as e:
+        sys.stderr.write(f"Warning: Redis counter error: {e}\n")
+    return None
 
 
 def init_db():
@@ -108,11 +139,24 @@ def health():
 @app.route("/api/visitor-count", methods=["GET"])
 @app.route("/visitor-count", methods=["GET"])
 def visitor_count():
-    init_db()
     read_only = request.args.get("peek", "false").lower() == "true"
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    # 1. Use Upstash Redis / Vercel KV if configured (provides persistent cross-container counting)
+    redis_val = redis_visitor_op(increment=not read_only)
+    if redis_val is not None:
+        return jsonify({
+            "status": "success",
+            "visitor_count": redis_val,
+            "total_views": redis_val,
+            "last_visited": now_iso,
+            "persistence": "redis_kv"
+        })
+
+    # 2. SQLite fallback
+    init_db()
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    now_iso = datetime.now(timezone.utc).isoformat()
     if not read_only:
         cursor.execute("""
             UPDATE visitor_stats
@@ -130,7 +174,8 @@ def visitor_count():
         "status": "success",
         "visitor_count": row[0] if row else initial_offset,
         "total_views": row[1] if row else initial_offset,
-        "last_visited": row[2] if row else now_iso
+        "last_visited": row[2] if row else now_iso,
+        "persistence": "sqlite"
     })
 
 
