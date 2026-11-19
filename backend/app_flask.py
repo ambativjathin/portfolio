@@ -12,9 +12,12 @@ if sys.version_info[0] < 3:
 import os
 import json
 import sqlite3
+import smtplib
+import ssl
 import urllib.request
 import urllib.error
 from datetime import datetime, timezone
+from email.message import EmailMessage
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
@@ -70,6 +73,79 @@ def redis_visitor_op(increment=False):
     except Exception as e:
         sys.stderr.write(f"Warning: Redis counter error: {e}\n")
     return None
+
+
+def send_contact_email(name, sender_email, subject, message, rating, created_at):
+    """
+    Send contact/feedback notification email via Resend API or SMTP (e.g. Gmail App Password).
+    Returns True if an email was sent, False otherwise.
+    """
+    to_email = os.environ.get("CONTACT_TO_EMAIL", "ambativjathin@gmail.com").strip()
+    email_subject = f"[Portfolio] {subject} — from {name}"
+    body_text = (
+        f"New portfolio message / feedback received:\n\n"
+        f"Name:    {name}\n"
+        f"Email:   {sender_email}\n"
+        f"Subject: {subject}\n"
+        f"Rating:  {rating}/5\n"
+        f"Time:    {created_at}\n\n"
+        f"Message:\n{message}\n"
+    )
+
+    resend_key = os.environ.get("RESEND_API_KEY", "").strip()
+    if resend_key:
+        try:
+            from_addr = os.environ.get("RESEND_FROM_EMAIL", "Portfolio Contact <onboarding@resend.dev>").strip()
+            payload = json.dumps({
+                "from": from_addr,
+                "to": [to_email],
+                "reply_to": sender_email,
+                "subject": email_subject,
+                "text": body_text,
+            }).encode("utf-8")
+            req = urllib.request.Request(
+                "https://api.resend.com/emails",
+                data=payload,
+                headers={
+                    "Authorization": f"Bearer {resend_key}",
+                    "Content-Type": "application/json",
+                },
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                if 200 <= resp.status < 300:
+                    return True
+        except Exception as e:
+            sys.stderr.write(f"Warning: Resend email error: {e}\n")
+
+    smtp_user = (os.environ.get("SMTP_USER") or os.environ.get("GMAIL_USER") or "").strip()
+    smtp_pass = (os.environ.get("SMTP_PASS") or os.environ.get("GMAIL_APP_PASSWORD") or "").strip()
+    if smtp_user and smtp_pass:
+        smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com").strip()
+        smtp_port = int(os.environ.get("SMTP_PORT", "465"))
+        try:
+            msg = EmailMessage()
+            msg["Subject"] = email_subject
+            msg["From"] = smtp_user
+            msg["To"] = to_email
+            msg["Reply-To"] = sender_email
+            msg.set_content(body_text)
+
+            context = ssl.create_default_context()
+            if smtp_port == 465:
+                with smtplib.SMTP_SSL(smtp_host, smtp_port, context=context, timeout=8) as server:
+                    server.login(smtp_user, smtp_pass)
+                    server.send_message(msg)
+            else:
+                with smtplib.SMTP(smtp_host, smtp_port, timeout=8) as server:
+                    server.starttls(context=context)
+                    server.login(smtp_user, smtp_pass)
+                    server.send_message(msg)
+            return True
+        except Exception as e:
+            sys.stderr.write(f"Warning: SMTP email error: {e}\n")
+
+    return False
 
 
 def init_db():
@@ -216,10 +292,13 @@ def submit_contact():
     conn.commit()
     conn.close()
 
+    email_sent = send_contact_email(name, email, subject, message, rating, now_iso)
+
     return jsonify({
         "status": "success",
         "message": "Thank you! Your message has been received by Jathin Ambati.",
-        "submission_id": sub_id
+        "submission_id": sub_id,
+        "email_sent": email_sent
     }), 201
 
 
