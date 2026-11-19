@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState, useEffect } from "react";
 import "./App.css";
+import { Analytics } from "@vercel/analytics/react";
 
 const CharacterModel = lazy(() => import("./components/Character"));
 const MainContainer = lazy(() => import("./components/MainContainer"));
@@ -33,22 +34,25 @@ const App = () => {
 
   if (isResume) {
     return (
-      <Suspense
-        fallback={
-          <div
-            style={{
-              color: "#fff",
-              padding: "50px",
-              textAlign: "center",
-              fontFamily: "sans-serif",
-            }}
-          >
-            Loading Resume...
-          </div>
-        }
-      >
-        <ResumePage />
-      </Suspense>
+      <>
+        <Suspense
+          fallback={
+            <div
+              style={{
+                color: "#fff",
+                padding: "50px",
+                textAlign: "center",
+                fontFamily: "sans-serif",
+              }}
+            >
+              Loading Resume...
+            </div>
+          }
+        >
+          <ResumePage />
+        </Suspense>
+        <Analytics />
+      </>
     );
   }
 
@@ -63,6 +67,7 @@ const App = () => {
           </MainContainer>
         </Suspense>
       </LoadingProvider>
+      <Analytics />
     </>
   );
 };
