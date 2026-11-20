@@ -49,6 +49,13 @@ const projects = [
     image: "/images/projects/nlp-llm.jpg",
     link: "https://github.com/ambativjathin",
   },
+  {
+    title: "ChronoLens",
+    category: "Isomorphic Analyst Workstation",
+    tools: "SPARQL, Wikidata, Pydantic v2, Comparative Chronology",
+    image: "/images/projects/chronolens.jpg",
+    link: "https://github.com/ambativjathin",
+  },
 ];
 
 const Work = () => {
@@ -58,7 +65,7 @@ const Work = () => {
       const workContainer = document.querySelector(".work-container") as HTMLElement;
       if (!boxes.length || !workContainer) return 0;
       const lastBox = boxes[boxes.length - 1] as HTMLElement;
-      // Stop precisely as the 6th card reaches full view at the right boundary with zero excess gap
+      // Stop precisely as the last card reaches full view at the right boundary with zero excess gap
       return Math.max(0, lastBox.offsetLeft + lastBox.offsetWidth - workContainer.clientWidth);
     }
 

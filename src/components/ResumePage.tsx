@@ -304,6 +304,23 @@ const ResumePage = () => {
               </li>
             </ul>
           </div>
+
+          <div className="cv-project-item">
+            <div className="cv-item-header">
+              <h4 className="cv-item-title">ChronoLens — Isomorphic Analyst Workstation</h4>
+              <span className="cv-tech-pill">SPARQL • Wikidata • Pydantic v2 • TypeScript</span>
+            </div>
+            <ul className="cv-bullets">
+              <li>
+                Built a comparative historical analysis workstation anchored to live Wikidata
+                SPARQL queries with Pydantic v2 schema validation.
+              </li>
+              <li>
+                Computes isomorphic alignment, divergence index, temporal velocity, and
+                equivalence risk across historical events with JSON and print brief exports.
+              </li>
+            </ul>
+          </div>
         </section>
 
         {/* Certifications & Milestones */}
